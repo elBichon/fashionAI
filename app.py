@@ -54,33 +54,30 @@ def main():
 	if image_file is not None:
 		st.image(image_file,width=250,height=250)
 		image = np.array(Image.open(image_file))
-		img = app_utils.white_balance(image)
-		img = app_utils.sharpen_img(img)
-		img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+		img = app_utils.img_enhance(image)
 		img = cv2.resize(img, (IMAGE_SIZE, IMAGE_SIZE), interpolation=cv2.INTER_AREA)  
 		img2 = cv2.resize(image, (IMAGE_SIZE, IMAGE_SIZE), interpolation=cv2.INTER_AREA)  
 		results = rcnn.detect([img], verbose=0)
 		r = results[0]
-		i = 0
+		
+
 		class_id = list(r['class_ids'])
+		i = 0
 		while i < len(class_id):
 			class_id[i] = class_id[i]-1
 			i += 1
-		print(class_id)
+
 		if search_cloth in class_id:
 			cloth_to_search = class_id.index(search_cloth)
 		else:
 			pass
+
 		r['class_ids'] = np.array(class_id)
 		mask = r['masks']
 		mask = mask.astype(int)
-		img[:,:,2] = img[:,:,2] * mask[:,:,cloth_to_search]
-		image1 = img[:,:,2][r['rois'][cloth_to_search][0]:r['rois'][cloth_to_search][2], r['rois'][cloth_to_search][1]:r['rois'][cloth_to_search][3]]
+		blur = app_utils.extract_from_mask(r, img, img2, mask, cloth_to_search)
 		image = img2[r['rois'][cloth_to_search][0]:r['rois'][cloth_to_search][2], r['rois'][cloth_to_search][1]:r['rois'][cloth_to_search][3]]
-		blur = cv2.blur(image1,(5,5))
-		th, im_th = cv2.threshold(blur, -0, 256, cv2.THRESH_BINARY)
-		im_th = cv2.resize(im_th, im_th.shape[1::-1])
-		dst = cv2.bitwise_and(image, image, mask=im_th)
+		dst = app_utils.get_mask(blur, image)
 		st.image(dst,width=250,height=250)
 
 if __name__ == '__main__':
