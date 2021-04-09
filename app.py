@@ -40,7 +40,6 @@ import cv2
 
 CLASS_NAMES = ['shirt, blouse', 'top, t-shirt, sweatshirt', 'sweater', 'cardigan', 'jacket', 'vest', 'pants', 'shorts', 'skirt', 'coat', 'dress', 'jumpsuit', 'cape', 'glasses', 'hat', 'headband, head covering, hair accessory', 'tie', 'glove', 'watch', 'belt', 'leg warmer', 'tights, stockings', 'sock', 'shoe', 'bag, wallet', 'scarf', 'umbrella', 'hood', 'collar', 'lapel', 'epaulette', 'sleeve', 'pocket', 'neckline', 'buckle', 'zipper', 'applique', 'bead', 'bow', 'flower', 'fringe', 'ribbon', 'rivet', 'ruffle', 'sequin', 'tassel']
 IMAGE_SIZE = 512
-
 rcnn = MaskRCNN(mode='inference', model_dir='.', config=config_files.TestConfig())
 rcnn.load_weights('mask_rcnn_fashion_0003.h5', by_name=True)
 
@@ -51,7 +50,7 @@ def main():
 	st.title("Fashion AI")
 	st.subheader("Your clothes research vision assistant")
 	image_file = st.sidebar.file_uploader("Upload Image",type=['png','jpeg','jpg'])
-	
+
 	if image_file is not None:
 		st.image(image_file,width=250,height=250)
 		image = np.array(Image.open(image_file))
@@ -67,6 +66,7 @@ def main():
 		while i < len(class_id):
 			class_id[i] = class_id[i]-1
 			i += 1
+		print(class_id)
 		if search_cloth in class_id:
 			cloth_to_search = class_id.index(search_cloth)
 		else:
