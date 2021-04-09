@@ -41,3 +41,36 @@ def select_cloth(option):
 			return False
 	except:
 		return False
+
+
+def img_enhance(image):
+	try:
+		if len(image) > 0 and isinstance(image, (np.ndarray)) == True:
+			img = white_balance(image)
+			img = sharpen_img(img)
+			img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+			return img
+		else:
+			return False
+	except:
+		return False
+
+
+def extract_from_mask(r, img, img2, mask, cloth_to_search):
+	try:
+		img[:,:,2] = img[:,:,2] * mask[:,:,cloth_to_search]
+		image1 = img[:,:,2][r['rois'][cloth_to_search][0]:r['rois'][cloth_to_search][2], r['rois'][cloth_to_search][1]:r['rois'][cloth_to_search][3]]
+		blur = cv2.blur(image1,(5,5))
+		return blur
+	except:
+		return False
+
+
+def get_mask(blur, image):
+	try:
+		th, im_th = cv2.threshold(blur, -0, 256, cv2.THRESH_BINARY)
+		im_th = cv2.resize(im_th, im_th.shape[1::-1])
+		dst = cv2.bitwise_and(image, image, mask=im_th)
+		return dst
+	except:
+		return False
