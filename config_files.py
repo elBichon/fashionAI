@@ -1,3 +1,6 @@
+from mrcnn.config import Config
+IMAGE_SIZE = 512
+
 class TestConfig(Config):
 	GPU_COUNT = 1
 	IMAGES_PER_GPU = 1

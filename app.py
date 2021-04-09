@@ -38,9 +38,7 @@ import numpy as np
 import cv2
 
 
-class_names = ['shirt, blouse', 'top, t-shirt, sweatshirt', 'sweater', 'cardigan', 'jacket', 'vest', 'pants', 'shorts', 'skirt', 'coat', 'dress', 'jumpsuit', 'cape', 'glasses', 'hat', 'headband, head covering, hair accessory', 'tie', 'glove', 'watch', 'belt', 'leg warmer', 'tights, stockings', 'sock', 'shoe', 'bag, wallet', 'scarf', 'umbrella', 'hood', 'collar', 'lapel', 'epaulette', 'sleeve', 'pocket', 'neckline', 'buckle', 'zipper', 'applique', 'bead', 'bow', 'flower', 'fringe', 'ribbon', 'rivet', 'ruffle', 'sequin', 'tassel']
-
-
+CLASS_NAMES = ['shirt, blouse', 'top, t-shirt, sweatshirt', 'sweater', 'cardigan', 'jacket', 'vest', 'pants', 'shorts', 'skirt', 'coat', 'dress', 'jumpsuit', 'cape', 'glasses', 'hat', 'headband, head covering, hair accessory', 'tie', 'glove', 'watch', 'belt', 'leg warmer', 'tights, stockings', 'sock', 'shoe', 'bag, wallet', 'scarf', 'umbrella', 'hood', 'collar', 'lapel', 'epaulette', 'sleeve', 'pocket', 'neckline', 'buckle', 'zipper', 'applique', 'bead', 'bow', 'flower', 'fringe', 'ribbon', 'rivet', 'ruffle', 'sequin', 'tassel']
 IMAGE_SIZE = 512
 
 rcnn = MaskRCNN(mode='inference', model_dir='.', config=config_files.TestConfig())
@@ -48,16 +46,12 @@ rcnn.load_weights('mask_rcnn_fashion_0003.h5', by_name=True)
 
 
 def main():
-	option = st.selectbox(
-	'What are you looking for ?',
-	('shirt, blouse', 'top, t-shirt, sweatshirt', 'sweater', 'cardigan', 'jacket', 'vest', 'pants', 'shorts', 'skirt', 'coat', 'dress', 'hat', 'headband, head covering, hair accessory', 'shoe', 'bag, wallet'))
-	st.write('You selected:', option)
-
-	cloth_id = {'shirt, blouse':0, 'top, t-shirt, sweatshirt':1, 'sweater':2, 'cardigan':3, 'jacket':4, 'vest':5, 'pants':6, 'shorts':7, 'skirt':8, 'coat':9, 'dress':10, 'hat':14, 'headband, head covering, hair accessory':15, 'shoe':23, 'bag, wallet':24}
-	search_cloth = cloth_id[option]
+	option = st.selectbox('What are you looking for ?',('top, t-shirt, sweatshirt', 'pants', 'shorts', 'skirt', 'dress', 'hat', 'shoe', 'bag, wallet'))
+	search_cloth = app_utils.select_cloth(option)
 	st.title("Fashion AI")
 	st.subheader("Your clothes research vision assistant")
 	image_file = st.sidebar.file_uploader("Upload Image",type=['png','jpeg','jpg'])
+	
 	if image_file is not None:
 		st.image(image_file,width=250,height=250)
 		image = np.array(Image.open(image_file))
