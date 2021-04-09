@@ -1,4 +1,5 @@
 import app_utils
+import config_files
 import streamlit as st
 from PIL import Image 
 import cv2
@@ -41,22 +42,9 @@ class_names = ['shirt, blouse', 'top, t-shirt, sweatshirt', 'sweater', 'cardigan
 
 
 IMAGE_SIZE = 512
-# define the test configuration
-class TestConfig(Config):
-	GPU_COUNT = 1
-	IMAGES_PER_GPU = 1
-	NUM_CLASSES = 1 + 46
-	NAME = "fashion"
-	BACKBONE = 'resnet50'
-	IMAGE_MIN_DIM = IMAGE_SIZE
-	IMAGE_MAX_DIM = IMAGE_SIZE    
-	IMAGE_RESIZE_MODE = 'none'
-	RPN_ANCHOR_SCALES = (16, 32, 64, 128, 256)
 
-    
-rcnn = MaskRCNN(mode='inference', model_dir='.', config=TestConfig())
+rcnn = MaskRCNN(mode='inference', model_dir='.', config=config_files.TestConfig())
 rcnn.load_weights('mask_rcnn_fashion_0003.h5', by_name=True)
-
 
 
 def main():
